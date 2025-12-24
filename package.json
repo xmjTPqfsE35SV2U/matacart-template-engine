@@ -1,0 +1,35 @@
+{
+  "name": "matacart-template-engine",
+  "version": "1.0.0",
+  "description": "A template engine module library compatible with Next.js",
+  "main": "index.js",
+  "module": "index.mjs",
+  "types": "index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "require": "./index.js",
+      "import": "./index.mjs"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "handlebars",
+    "hbs",
+    "template",
+    "engine",
+    "nextjs"
+  ],
+  "author": "wucong",
+  "license": "MIT",
+  "dependencies": {
+    "handlebars": "^4.7.7",
+    "striptags": "^3.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.130",
+    "@types/striptags": "^3.1.1"
+  }
+}
