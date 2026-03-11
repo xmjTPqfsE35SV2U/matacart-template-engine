@@ -1,6 +1,6 @@
 {
   "name": "matacart-template-engine",
-  "version": "1.0.7",
+  "version": "1.0.4",
   "description": "A template engine module library compatible with Next.js",
   "main": "dist/index.js",
   "type": "module",

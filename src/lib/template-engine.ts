@@ -77,16 +77,13 @@ class HbsTemplateEngine {
     const template = this.handlebars.compile(templateContent);
     return template(context);
   }
-
   // 添加创建安全字符串的方法
   createSafeString(string: string) {
     return new this.handlebars.SafeString(string);
   }
-
   // 添加编译方法，返回编译后的模板函数
   compile(templateString: string) {
     return this.handlebars.compile(templateString);
   }
 }
-
-module.exports = { HbsTemplateEngine };
+export { HbsTemplateEngine };
