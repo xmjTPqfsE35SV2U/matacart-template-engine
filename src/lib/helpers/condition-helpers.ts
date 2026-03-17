@@ -1,7 +1,5 @@
-import type { HelperOptions } from 'handlebars';
 // 导入工具函数
 import util from './util';
-
 // 自定义isFalsy函数
 function isFalsy(value: any): boolean {
     return !value || value === 0 || value === '' || Number.isNaN(value);

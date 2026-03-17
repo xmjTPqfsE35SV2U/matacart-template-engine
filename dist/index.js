@@ -8469,12 +8469,9 @@ const crypto = require('crypto');
 // 获取文件内容
 const getFileContent = (name, fileConfig) => {
     // 本地环境测试
-    if (process.env.NEXT_PUBLIC_MOCK_MODE === 'true') {
+    if (process.env.STORE_DEV === 'true') {
         // 读取本地文件
         const snippetsPath = path.join(process.cwd(), 'public', 'project', name);
-        if (name == "sections/announcement-bar.html") {
-            console.log("sections/announcement-bar.html");
-        }
         const content = fs.readFileSync(snippetsPath, 'utf8');
         return content;
     }
@@ -8498,6 +8495,9 @@ const getFileContent = (name, fileConfig) => {
         // 从CDN下载文件并保存到本地
         console.log(`缺少文件${name}`);
         content = "{}";
+    }
+    if (name == "templates/password.json") {
+        console.log('content', content);
     }
     return content;
 };
@@ -9587,6 +9587,9 @@ function registerCoreHelpers(Handlebars) {
             case 'product':
                 formAttributes.action = '/cart/add';
                 break;
+            case 'storefront_password':
+                formAttributes.action = '/api/site/form/storefront_password';
+                break;
             default:
                 formAttributes.action = '/' + formType;
         }
@@ -10233,7 +10236,7 @@ function registerAssetHelpers(Handlebars) {
                 // 获取文件对象
                 if (filePath.endsWith('.css')) {
                     let url;
-                    if (process.env.NEXT_PUBLIC_MOCK_MODE === 'true') {
+                    if (process.env.STORE_DEV === 'true') {
                         url = `/project/assets/${filePath}.hbs`;
                     }
                     else {
@@ -10245,7 +10248,7 @@ function registerAssetHelpers(Handlebars) {
                 else if (filePath.endsWith('.js')) {
                     // 本地文件路径
                     let url;
-                    if (process.env.NEXT_PUBLIC_MOCK_MODE === 'true') {
+                    if (process.env.STORE_DEV === 'true') {
                         url = `/project/assets/${filePath}`;
                     }
                     else {
@@ -10278,7 +10281,7 @@ function registerAssetHelpers(Handlebars) {
         let normalizedPath = assetPath.trim();
         const fileConfig = options.data.root.fileConfig;
         let url;
-        if (process.env.NEXT_PUBLIC_MOCK_MODE === 'true') {
+        if (process.env.STORE_DEV === 'true') {
             url = `/project/assets/${normalizedPath}`;
         }
         else {
@@ -10293,10 +10296,6 @@ function registerAssetHelpers(Handlebars) {
         try {
             const fileConfig = options.data.root.fileConfig;
             const snippetsFileContent = getFileContent(`snippets/${content}.html`, fileConfig);
-            // if(content == "blogs/simple-blog"){
-            //     console.log('文件路径:', `snippets/${content}.html`);
-            //     console.log('文件内容:', snippetsFileContent);
-            // }
             const templateHtml = snippetsFileContent;
             // 将读取的文件内容作为 Handlebars 模板编译
             const template = Handlebars.compile(templateHtml);

@@ -35,28 +35,28 @@ export function registerAssetHelpers(Handlebars: typeof import('handlebars')) {
             // 获取文件对象
             if (filePath.endsWith('.css')) {
                 let url;
-                if(process.env.NEXT_PUBLIC_MOCK_MODE === 'true'){
-                url = `/project/assets/${filePath}.hbs`;
+                if(process.env.STORE_DEV === 'true'){
+                    url = `/project/assets/${filePath}.hbs`;
                 }else{
-                const combineAssetTagFile = fileConfig.fileListMap?.[`assets/${filePath}.hbs`];
-                url = combineAssetTagFile.cdn_url
+                    const combineAssetTagFile = fileConfig.fileListMap?.[`assets/${filePath}.hbs`];
+                    url = combineAssetTagFile.cdn_url
                 }
                 output += `<link rel="stylesheet" href="${url}">`;
             } else if (filePath.endsWith('.js')) {
                 // 本地文件路径
                 let url;
-                if(process.env.NEXT_PUBLIC_MOCK_MODE === 'true'){
-                url = `/project/assets/${filePath}`;
+                if(process.env.STORE_DEV === 'true'){
+                    url = `/project/assets/${filePath}`;
                 }else{
-                const combineAssetTagFile = fileConfig.fileListMap[`assets/${filePath}`];
-                url = combineAssetTagFile.cdn_url
+                    const combineAssetTagFile = fileConfig.fileListMap[`assets/${filePath}`];
+                    url = combineAssetTagFile.cdn_url
                 }
                 let scriptTag = `<script src="${url}"`;
                 if (config.type) {
-                scriptTag += ` type="${config.type}"`;
+                    scriptTag += ` type="${config.type}"`;
                 }
                 if (config.defer) {
-                scriptTag += ` defer="defer"`;
+                    scriptTag += ` defer="defer"`;
                 }
                 scriptTag += '></script>';
                 output += scriptTag;
@@ -78,7 +78,7 @@ export function registerAssetHelpers(Handlebars: typeof import('handlebars')) {
         const fileConfig = options.data.root.fileConfig;
 
         let url;
-        if(process.env.NEXT_PUBLIC_MOCK_MODE === 'true'){
+        if(process.env.STORE_DEV === 'true'){
             url = `/project/assets/${normalizedPath}`;
         }else{
             const snippetsFile = fileConfig.fileListMap[`assets/${normalizedPath}`];
@@ -92,10 +92,6 @@ export function registerAssetHelpers(Handlebars: typeof import('handlebars')) {
         try {
             const fileConfig = options.data.root.fileConfig;
             const snippetsFileContent = getFileContent(`snippets/${content}.html`,fileConfig);
-            // if(content == "blogs/simple-blog"){
-            //     console.log('文件路径:', `snippets/${content}.html`);
-            //     console.log('文件内容:', snippetsFileContent);
-            // }
             const templateHtml = snippetsFileContent;
             // 将读取的文件内容作为 Handlebars 模板编译
             const template = Handlebars.compile(templateHtml);

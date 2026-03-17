@@ -16,18 +16,13 @@ export interface fileConfig {
 // 获取文件内容
 export const getFileContent = (name:string,fileConfig:fileConfig) => {
     // 本地环境测试
-    if(process.env.NEXT_PUBLIC_MOCK_MODE === 'true'){
+    if(process.env.STORE_DEV === 'true'){
         // 读取本地文件
         const snippetsPath = path.join(process.cwd(),'public','project',name);
-        if(name=="sections/announcement-bar.html"){
-            console.log("sections/announcement-bar.html")
-
-        }
         const content = fs.readFileSync(snippetsPath, 'utf8');
         return content;
     }
     const fileObj = fileConfig.fileListMap[name];
-    
     // 检查 fileObj 是否存在
     if (!fileObj) {
         console.warn(`File ${name} not found in fileListMap`);
@@ -46,6 +41,9 @@ export const getFileContent = (name:string,fileConfig:fileConfig) => {
         // 从CDN下载文件并保存到本地
         console.log(`缺少文件${name}`);
         content = "{}"
+    }
+    if(name=="templates/password.json"){
+        console.log('content',content);
     }
     return content;
 };

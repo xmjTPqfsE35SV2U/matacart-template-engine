@@ -37,8 +37,10 @@ export function registerAllHelpers() {
     return undefined;
   });
 }
-// 导出Handlebars全局对象
-export { Handlebars };
 
 // 执行注册
 registerAllHelpers();
+
+// 导出Handlebars全局对象
+export { Handlebars };
+

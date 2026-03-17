@@ -280,23 +280,26 @@ export function registerCoreHelpers(Handlebars: typeof import('handlebars')) {
         // 根据表单类型设置 action
         switch (formType) {
             case 'localization':
-            formAttributes.action = '/api/localization';
-            formAttributes.enctype = 'application/x-www-form-urlencoded';
-            break;
+                formAttributes.action = '/api/localization';
+                formAttributes.enctype = 'application/x-www-form-urlencoded';
+                break;
             case 'customer':
-            formAttributes.action = '/account';
-            break;
+                formAttributes.action = '/account';
+                break;
             case 'contact':
-            formAttributes.action = '/contact';
-            break;
+                formAttributes.action = '/contact';
+                break;
             case 'cart':
-            formAttributes.action = '/cart';
-            break;
+                formAttributes.action = '/cart';
+                break;
             case 'product':
-            formAttributes.action = '/cart/add';
-            break;
+                formAttributes.action = '/cart/add';
+                break;
+            case 'storefront_password':
+                formAttributes.action = '/api/site/form/storefront_password';
+                break;
             default:
-            formAttributes.action = '/' + formType;
+                formAttributes.action = '/' + formType;
         }
 
         // 构建属性字符串

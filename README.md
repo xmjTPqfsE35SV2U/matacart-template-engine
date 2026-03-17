@@ -1,5 +1,6 @@
 一个基于handlebars的渲染包
 项目构建
+```text
 matacart-template-engine/
 ├── src/                  # 源码
 │   └── index.ts          
@@ -8,3 +9,4 @@ matacart-template-engine/
 │   └── index.mjs         # ES Module 版本
 ├── package.json
 └── rollup.config.js
+```
