@@ -50,7 +50,7 @@ export function registerConditionHelpers(Handlebars: typeof import('handlebars')
             }
             return values[0] == values[1];
         }
-        // 处理复杂表达式（三个或更多参数）
+        // 处理复杂表达式（三个参数）
         if (values.length >= 3) {
             let result = values[0];
             // 按顺序处理操作符和操作数

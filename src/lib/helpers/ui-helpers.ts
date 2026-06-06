@@ -21,7 +21,7 @@ export function registerUiHelpers(Handlebars: typeof import('handlebars')) {
     });
     // hex_2_rgb助手函数
     Handlebars.registerHelper("hex_2_rgb",function (hex) {
-        if (!hex) return '255,255,255';
+        if (!hex) return '';
         hex = String(hex).replace('#', '');
         if (hex.length === 3) {
             hex = hex.split('').map((char:any) => char + char).join('');
@@ -29,7 +29,7 @@ export function registerUiHelpers(Handlebars: typeof import('handlebars')) {
         const r = parseInt(hex.substring(0, 2), 16);
         const g = parseInt(hex.substring(2, 4), 16);
         const b = parseInt(hex.substring(4, 6), 16);
-        return r + ',' + g + ',' + b;
+        return `${r},${g},${b}`;
     });
     // image_responsive 助手函数
     Handlebars.registerHelper("image_responsive",function (src, options) {
@@ -295,5 +295,279 @@ export function registerUiHelpers(Handlebars: typeof import('handlebars')) {
         // 执行块内容并返回结果
         return options.fn(context);
     });
-
+    /**
+     * trade_checkout_receiverInfo 助手函数
+     * 用于在结账和地址页面渲染收件人信息表单字段
+     */
+    Handlebars.registerHelper('trade_checkout_receiverInfo', function(this:any,options) {
+      try {
+        const pageType = options.hash.pageType || 'checkout';
+        const action = options.hash.action || 'render';
+        const target = options.hash.target || '';
+        // 获取上下文中的 controls 数据
+        const controls = [
+            {
+                "label": "Country/Region",
+                "labelKey": "",
+                "labelOptional": false,
+                "controlHide": false,
+                "templateKey": "country",
+                "controlClass": "col-xs-24 col-md-24 col-xl-24 has-content  checkout__form-group__last__right",
+                "controlStyle": "",
+                "isSelectControl": true,
+                "selectAttrs": {
+                    "key": "countryCode",
+                    "required": true,
+                    "requiredInvalidMsg": "Select a country / region",
+                    "label": "Country/Region",
+                    "value": "CN",
+                    "options": [
+                        {
+                            "value": "CN",
+                            "selected": true
+                        }
+                    ]
+                },
+                "inputAttrs": {
+                    "key": "country",
+                    "required": true,
+                    "requiredInvalidMsg": "Select a country / region",
+                    "label": "Country/Region",
+                    "hidden": true,
+                    "placeholder": "Country/Region"
+                }
+            },
+            {
+                "label": "First name",
+                "labelKey": "trade.firstName",
+                "labelOptional": false,
+                "controlHide": false,
+                "templateKey": "firstName",
+                "controlClass": "col-xs-24 col-md-12 col-xl-12",
+                "controlStyle": "",
+                "isSelectControl": false,
+                "selectAttrs": null,
+                "inputAttrs": {
+                    "key": "firstName",
+                    "required": true,
+                    "requiredInvalidMsg": "Enter a first name.",
+                    "label": "First name",
+                    "hidden": false,
+                    "placeholder": "First name"
+                }
+            },
+            {
+                "label": "Last name",
+                "labelKey": "",
+                "labelOptional": false,
+                "controlHide": false,
+                "templateKey": "lastName",
+                "controlClass": "col-xs-24 col-md-12 col-xl-12  checkout__form-group__last__right",
+                "controlStyle": "",
+                "isSelectControl": false,
+                "selectAttrs": null,
+                "inputAttrs": {
+                    "key": "lastName",
+                    "required": true,
+                    "requiredInvalidMsg": "Enter a last name.",
+                    "label": "Last name",
+                    "hidden": false,
+                    "placeholder": "Last name"
+                }
+            },
+            {
+                "label": "Province",
+                "labelKey": "",
+                "labelOptional": false,
+                "controlHide": false,
+                "templateKey": "province",
+                "controlClass": "col-xs-24 col-md-12 col-xl-12",
+                "controlStyle": "",
+                "isSelectControl": true,
+                "selectAttrs": {
+                    "key": "provinceCode",
+                    "required": true,
+                    "requiredInvalidMsg": "Select a state / province.",
+                    "label": "Province",
+                    "options": [
+                        {
+                            "selected": false
+                        }
+                    ]
+                },
+                "inputAttrs": {
+                    "key": "province",
+                    "required": true,
+                    "requiredInvalidMsg": "Select a state / province.",
+                    "label": "Province",
+                    "hidden": true,
+                    "placeholder": "Province"
+                }
+            },
+            {
+                "label": "City",
+                "labelKey": "",
+                "labelOptional": false,
+                "controlHide": false,
+                "templateKey": "city",
+                "controlClass": "col-xs-24 col-md-12 col-xl-12  checkout__form-group__last__right",
+                "controlStyle": "",
+                "isSelectControl": false,
+                "selectAttrs": null,
+                "inputAttrs": {
+                    "key": "city",
+                    "required": true,
+                    "requiredInvalidMsg": "Enter a city",
+                    "label": "City",
+                    "hidden": false,
+                    "placeholder": "City"
+                }
+            },
+            {
+                "label": "District",
+                "labelKey": "",
+                "labelOptional": false,
+                "controlHide": false,
+                "templateKey": "district",
+                "controlClass": "col-xs-24 col-md-12 col-xl-12",
+                "controlStyle": "",
+                "isSelectControl": false,
+                "selectAttrs": null,
+                "inputAttrs": {
+                    "key": "district",
+                    "required": true,
+                    "requiredInvalidMsg": "Select a district.",
+                    "label": "District",
+                    "hidden": false,
+                    "placeholder": "District"
+                }
+            },
+            {
+                "label": "Postcode",
+                "labelKey": "",
+                "labelOptional": false,
+                "controlHide": false,
+                "templateKey": "postcode",
+                "controlClass": "col-xs-24 col-md-12 col-xl-12  checkout__form-group__last__right",
+                "controlStyle": "",
+                "isSelectControl": false,
+                "selectAttrs": null,
+                "inputAttrs": {
+                    "key": "postcode",
+                    "required": false,
+                    "requiredInvalidMsg": "Enter a valid postcode",
+                    "label": "Postcode",
+                    "hidden": false,
+                    "placeholder": "Postcode"
+                }
+            },
+            {
+                "label": "Company",
+                "labelKey": "trade.company",
+                "labelOptional": true,
+                "controlHide": false,
+                "templateKey": "company",
+                "controlClass": "col-xs-24 col-md-24 col-xl-24  checkout__form-group__last__right",
+                "controlStyle": "",
+                "isSelectControl": false,
+                "selectAttrs": null,
+                "inputAttrs": {
+                    "key": "company",
+                    "required": false,
+                    "requiredInvalidMsg": "Enter a company name",
+                    "label": "Company",
+                    "hidden": false,
+                    "placeholder": "Company"
+                }
+            },
+            {
+                "label": "Full address",
+                "labelKey": "",
+                "labelOptional": false,
+                "controlHide": false,
+                "templateKey": "address1",
+                "controlClass": "col-xs-24 col-md-24 col-xl-24  checkout__form-group__last__right",
+                "controlStyle": "",
+                "isSelectControl": false,
+                "selectAttrs": null,
+                "inputAttrs": {
+                    "key": "address1",
+                    "required": true,
+                    "requiredInvalidMsg": "Enter an address",
+                    "label": "Full address",
+                    "hidden": false,
+                    "placeholder": "Full address"
+                }
+            },
+            {
+                "label": "Apartment, suite, etc.",
+                "labelKey": "trade.address2",
+                "labelOptional": true,
+                "controlHide": false,
+                "templateKey": "address2",
+                "controlClass": "col-xs-24 col-md-24 col-xl-24  checkout__form-group__last__right",
+                "controlStyle": "",
+                "isSelectControl": false,
+                "selectAttrs": null,
+                "inputAttrs": {
+                    "key": "address2",
+                    "required": false,
+                    "requiredInvalidMsg": "Enter your apartment, suite, etc.",
+                    "label": "Apartment, suite, etc.",
+                    "hidden": false,
+                    "placeholder": "Apartment, suite, etc."
+                }
+            },
+            {
+                "label": "Phone",
+                "labelKey": "trade.mobile",
+                "labelOptional": false,
+                "controlHide": false,
+                "templateKey": "mobile",
+                "controlClass": "col-xs-24 col-md-24 col-xl-24  checkout__form-group__last__right checkout__form-group__last__bottom",
+                "controlStyle": "",
+                "isSelectControl": false,
+                "selectAttrs": null,
+                "inputAttrs": {
+                    "key": "mobile",
+                    "required": true,
+                    "requiredInvalidMsg": "Enter a valid phone number",
+                    "label": "Phone",
+                    "hidden": false,
+                    "placeholder": "Phone"
+                }
+            },
+            {
+                "label": "Name",
+                "labelKey": "",
+                "labelOptional": true,
+                "controlHide": true,
+                "templateKey": "name",
+                "controlClass": "",
+                "controlStyle": "display: none;",
+                "isSelectControl": false,
+                "selectAttrs": null,
+                "inputAttrs": {
+                    "key": "name",
+                    "required": false,
+                    "requiredInvalidMsg": "Please enter a name.",
+                    "label": "Name",
+                    "hidden": false,
+                    "placeholder": "Name"
+                }
+            }
+        ];
+        // 预加载加载模板
+        if (action === 'loadStringTemplate') {
+            return new Handlebars.SafeString('');
+        }
+        // 创建包含 controls 的上下文
+        const contextWithControls = Object.assign({}, this, { controls: controls });
+        const result = options.fn(contextWithControls);
+        return new Handlebars.SafeString(result);
+      } catch (error) {
+        console.error('trade_checkout_receiverInfo helper error:', error);
+        return new Handlebars.SafeString('');
+      }
+    });
 }

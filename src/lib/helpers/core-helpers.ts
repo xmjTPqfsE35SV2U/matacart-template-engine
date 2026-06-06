@@ -56,26 +56,26 @@ export function registerCoreHelpers(Handlebars: typeof import('handlebars')) {
         const isBlockCall = typeof options === 'object' && options.fn;
         // 操作符
         const operatorMap:Record<string, (v1: any, v2: any) => boolean> = {
-            '==': function (v1:any, v2:any) { return v1 == v2; },
-            '===': function (v1:any, v2:any) { return v1 === v2; },
-            '!=': function (v1:any, v2:any) { return v1 != v2; },
-            '!==': function (v1:any, v2:any) { return v1 !== v2; },
-            '>': function (v1:any, v2:any) { return v1 > v2; },
-            '<': function (v1:any, v2:any) { return v1 < v2; },
-            '>=': function (v1:any, v2:any) { return v1 >= v2; },
-            '<=': function (v1:any, v2:any) { return v1 <= v2; },
-            'and': function (v1:any, v2:any) { return v1 && v2; },
-            'or': function (v1:any, v2:any) { return v1 || v2; },
-            'contains': function (v1:any, v2:any) {
-            // 检查 v1 是否为数组且包含 v2
-            if (Array.isArray(v1)) {
-                return v1.includes(v2);
-            }
-            // 如果 v1 是字符串，检查是否包含子字符串
-            if (typeof v1 === 'string' && typeof v2 === 'string') {
-                return v1.includes(v2);
-            }
-            return false;
+            '==': (v1:any, v2:any) => !!(v1 == v2),
+            '===': (v1:any, v2:any) => !!(v1 === v2),
+            '!=': (v1:any, v2:any) => !!(v1 != v2),
+            '!==': (v1:any, v2:any) => !!(v1 !== v2),
+            '>': (v1:any, v2:any) => !!(v1 > v2),
+            '<': (v1:any, v2:any) => !!(v1 < v2),
+            '>=': (v1:any, v2:any) => !!(v1 >= v2),
+            '<=': (v1:any, v2:any) => !!(v1 <= v2),
+            'and': (v1:any, v2:any) => !!(v1 && v2),
+            'or': (v1:any, v2:any) => !!(v1 || v2),
+            'contains': (v1:any, v2:any) => {
+                // 检查 v1 是否为数组且包含 v2
+                if (Array.isArray(v1)) {
+                    return v1.includes(v2);
+                }
+                // 如果 v1 是字符串，检查是否包含子字符串
+                if (typeof v1 === 'string' && typeof v2 === 'string') {
+                    return v1.includes(v2);
+                }
+                return false;
             },
         };
         if (isBlockCall) {
@@ -638,37 +638,8 @@ export function registerCoreHelpers(Handlebars: typeof import('handlebars')) {
         return uri;
       }
     });
-    // case 助手函数
-    Handlebars.registerHelper('case', function(this:any,value, options) {
-        // 保存原始上下文的引用
-        const originalContext = this;
-        const context = Object.create(this);
-        context._case_value_ = value;
-        context._case_matched_ = false;
-        // 执行块内容
-        const result = options.fn(context);
-        // 将在case块内创建或修改的变量复制回原始上下文
-        // 过滤掉内部使用的属性
-        Object.keys(context).forEach(key => {
-        if (!key.startsWith('_case_') && key !== '__proto__' && key !== 'constructor') {
-            originalContext[key] = context[key];
-        }
-        });
-        return result;
-    });
-    // when 助手函数
-    Handlebars.registerHelper('when', function(this:any,...args) {
-        // 获取options参数（最后一个参数）
-        const options = args[args.length - 1];
-        // 获取要比较的值（除了options之外的所有参数）
-        const values = args.slice(0, -1);
-        // 检查是否有匹配的值
-        if (!this._case_matched_ && values.some(value => this._case_value_ == value)) {
-        this._case_matched_ = true;
-        return options.fn(this);
-        }
-        return '';
-    });
+    
+    
     // typeOf 助手函数 用于类型判断
     Handlebars.registerHelper("typeOf", function(value) {
       // 处理 null 和 undefined 的特殊情况
@@ -852,6 +823,19 @@ export function registerCoreHelpers(Handlebars: typeof import('handlebars')) {
         return template || '';
       }
     });
+    // when 助手函数
+    Handlebars.registerHelper('when', function(this:any,...args) {
+        // 获取options参数（最后一个参数）
+        const options = args[args.length - 1];
+        // 获取要比较的值（除了options之外的所有参数）
+        const values = args.slice(0, -1);
+        // 检查是否有匹配的值
+        if (!this._case_matched_ && values.some(value => this._case_value_ == value)) {
+        this._case_matched_ = true;
+        return options.fn(this);
+        }
+        return '';
+    });
     // switch 助手函数 
     Handlebars.registerHelper('switch', function(this:any,value, options) {
         // 保存原始上下文的引用
@@ -870,6 +854,67 @@ export function registerCoreHelpers(Handlebars: typeof import('handlebars')) {
             }
         });
         return result;
+    });
+    // case 助手函数
+    // Handlebars.registerHelper('case', function(this:any,value, options) {
+    //     // 保存原始上下文的引用
+    //     const originalContext = this;
+    //     const context = Object.create(this);
+    //     context._case_value_ = value;
+    //     context._case_matched_ = false;
+    //     // 执行块内容
+    //     const result = options.fn(context);
+    //     // 将在case块内创建或修改的变量复制回原始上下文
+    //     // 过滤掉内部使用的属性
+    //     Object.keys(context).forEach(key => {
+    //     if (!key.startsWith('_case_') && key !== '__proto__' && key !== 'constructor') {
+    //         originalContext[key] = context[key];
+    //     }
+    //     });
+    //     return result;
+    // });
+    Handlebars.registerHelper('case', function(this:any,value, options) {
+        
+        // 如果之前的 case 已经匹配，则跳过
+        if (this._switch_matched_) {
+            return '';
+        }
+        // 保存原始上下文的引用
+        const originalContext = this;
+        const context = Object.create(this);
+
+        // 关键：将 case 的值保存到上下文，供 when 使用
+        context._case_value_ = value;
+        originalContext._case_value_ = value;
+        // 如果没有 switch_value_，说明是独立的 case/when 结构（没有外层 switch）
+        if (this._switch_value_ === undefined) {
+            const result = options.fn(context);
+            // 将在 case 块内创建或修改的变量复制回原始上下文
+            Object.keys(context).forEach(key => {
+                if (!key.startsWith('_case_') && !key.startsWith('_switch_') && key !== '__proto__' && key !== 'constructor') {
+                    originalContext[key] = context[key];
+                }
+            });
+            return result;
+        }
+
+        // 直接比较 switch 的值和 case 的值
+        const isMatch = this._switch_value_ == value;
+        if (isMatch) {
+            // 匹配成功，执行块内容
+            context._case_matched_ = true;
+            this._switch_matched_ = true;
+            const result = options.fn(context);
+            // 将在case块内创建或修改的变量复制回原始上下文
+            Object.keys(context).forEach(key => {
+                if (!key.startsWith('_case_') && !key.startsWith('_switch_') && key !== '__proto__' && key !== 'constructor') {
+                    originalContext[key] = context[key];
+                }
+            });
+            return result;
+        }
+        // 不匹配，返回空
+        return '';
     });
     // fallbackText 助手函数
     Handlebars.registerHelper("fallbackText", function (options) {

@@ -43,13 +43,13 @@ export function section({key, sectionName, content, handlebarsInstance}:sectionT
         // 移除 schema 部分，只保留模板内容
         sectionTemplate = sectionTemplate.replace(/{{#schema}}[\s\S]*?{{\/schema}}/, '');
         // 补充默认数据settings
-        sectionSchemaData.settings?.forEach((item:any) => {
+        sectionSchemaData?.settings?.forEach((item:any) => {
             if((newContent.section.settings?.[item.id] == undefined || newContent.section.settings?.[item.id] == null) && (item.default!==undefined)){
                 newContent.section.settings[item.id] = item.default;
             }
         });
         // 补充默认数据blocks
-        sectionSchemaData.blocks?.forEach((block:any) => {
+        sectionSchemaData?.blocks?.forEach((block:any) => {
             block.settings?.forEach((item:any) => {
                 if(newContent.section?.blocks){
                     Object.entries(newContent.section.blocks).forEach(([blockKey,blockData]:[string,any]) => {

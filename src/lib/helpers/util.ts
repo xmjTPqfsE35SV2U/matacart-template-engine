@@ -117,6 +117,60 @@ const util = {
             }
         }
         return range;
+    },
+    // 辅助方法：渲染单个收件人字段
+    _renderReceiverField(field: any, pageType: string, options: any): string {
+      const context = options.data && options.data.root ? options.data.root : {};
+      const value = context[field.name] || '';
+      const required = field.required ? 'required' : '';
+      const placeholder = field.placeholder || '';
+      
+      let fieldHtml = `<div class="receiver-field receiver-field-${field.name}">`;
+      fieldHtml += `<label for="${field.name}">${field.label}${field.required ? ' *' : ''}</label>`;
+      
+      switch (field.type) {
+        case 'text':
+        case 'tel':
+        case 'email':
+          fieldHtml += `<input type="${field.type}" 
+                            id="${field.name}" 
+                            name="${field.name}" 
+                            value="${value}" 
+                            placeholder="${placeholder}" 
+                            ${required}>`;
+          break;
+        case 'textarea':
+          fieldHtml += `<textarea id="${field.name}" 
+                              name="${field.name}" 
+                              placeholder="${placeholder}" 
+                              ${required}>${value}</textarea>`;
+          break;
+        case 'select':
+          fieldHtml += `<select id="${field.name}" 
+                            name="${field.name}" 
+                            ${required}>`;
+          fieldHtml += `<option value="">${field.label}</option>`;
+          if (field.options && field.options.length > 0) {
+            field.options.forEach((option: any) => {
+              const selected = option.value === value ? 'selected' : '';
+              fieldHtml += `<option value="${option.value}" ${selected}>${option.label}</option>`;
+            });
+          }
+          fieldHtml += `</select>`;
+          break;
+      }
+      
+      fieldHtml += '</div>';
+      return fieldHtml;
+    },
+    // 辅助方法：获取字符串模板
+    _getStringTemplate(fields: any[], pageType: string): string {
+      let template = '{{#trade_checkout_receiverInfo pageType="' + pageType + '"}}';
+      template += '{{#each controls}}';
+      template += '{{include \'snippets/customer/account/address_field_control\'}}';
+      template += '{{/each}}';
+      template += '{{/trade_checkout_receiverInfo}}';
+      return template;
     }
 
 };

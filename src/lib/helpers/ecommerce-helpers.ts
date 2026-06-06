@@ -9,39 +9,39 @@ export function registerEcommerceHelpers(Handlebars: typeof import('handlebars')
     // String 区域设置文件中的key
     // returns {String} 已翻译文本字符串
     Handlebars.registerHelper("t",function (key, options) {
+        
         // 检查 key 是否有效
         if (key === undefined || key === null) {
             return '';
         }
-
         const keys = key.split('.');
-
         let current = i18nManager.I18nData;
         // 查找翻译文本
         for(const key of keys){
             if(current && (current[key] !== undefined)) {
-            current = current[key];
+              current = current[key];
             } else {
-            current = undefined; // 路径不存在
-            break;
+              current = undefined; // 路径不存在
+              break;
             }
         }
+        
         // {{t 'products.product_list.one_product_num' num=products.realTotal}}
         // 如果找到翻译文本且是字符串
         if (typeof current === 'string' && options.hash) {
             let translated = current;
             // 1. 先处理三重花括号占位符：{{{placeholder}}}
             for (const [placeholder, value] of Object.entries(options.hash)) {
-            const regex = new RegExp(`{\\{\\{\\s*${placeholder}\\s*\\}\\}\\}`, 'g');
-            translated = translated.replace(regex, value || key);
+              const regex = new RegExp(`{\\{\\{\\s*${placeholder}\\s*\\}\\}\\}`, 'g');
+              translated = translated.replace(regex, value || key);
             }
             // 2. 再处理双重花括号占位符：{{placeholder}}
             for (const [placeholder, value] of Object.entries(options.hash)) {
-            const regex = new RegExp(`{\\{\\s*${placeholder}\\s*\\}\\}`, 'g');
-            translated = translated.replace(regex, Handlebars.Utils.escapeExpression(value??key));
+              const regex = new RegExp(`{\\{\\s*${placeholder}\\s*\\}\\}`, 'g');
+              translated = translated.replace(regex, Handlebars.Utils.escapeExpression(value??key));
             }
             if(translated){
-            return new Handlebars.SafeString(translated);
+              return new Handlebars.SafeString(translated);
             }
         }
         return current || key;
@@ -129,9 +129,9 @@ export function registerEcommerceHelpers(Handlebars: typeof import('handlebars')
     // money_exchange_convert_with_currency 助手函数 --- 待调整 货币
     Handlebars.registerHelper("money_exchange_convert_with_currency",function (this:any,money) {
         // 获取货币
-        const currency = this.currencyCode;
+        const currency = this.currencyCode || 'USD';
         if (money || money == 0) {
-            return `$` + Number(money) / 100 + ` ${currency}`;
+            return `$` + Number(money).toFixed(2) + ` ${currency}`;
         }
         return ""
     });
@@ -724,6 +724,9 @@ export function registerEcommerceHelpers(Handlebars: typeof import('handlebars')
         
         // 格式化价格
         const formattedPrice = numericPrice.toFixed(precision);
+
+        // 返回格式化后的价格
+        return formattedPrice;
         
         // 分离整数和小数部分
         const parts = formattedPrice.split('.');
